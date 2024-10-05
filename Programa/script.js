@@ -19,7 +19,23 @@ FORM.addEventListener("submit", function () {
             taxAmount: xmlFile.getElementsByTagName("cbc:TaxAmount")[0].childNodes[0].nodeValue,
             taxableAmount: xmlFile.getElementsByTagName("cbc:TaxableAmount")[0].childNodes[0].nodeValue,
             payableAmount: xmlFile.getElementsByTagName("cbc:PayableAmount")[0].childNodes[0].nodeValue,
-            description: xmlFile.getElementsByTagName("cbc:Description")[0].childNodes[0].nodeValue
+            description: xmlFile.getElementsByTagName("cbc:Description")[0].childNodes[0].nodeValue,
+            t_documento_emi: xmlFile.getElementsByTagName("cbc:RegistrationName")[0].childNodes[0].nodeValue,
+
+            ubl: xmlFile.getElementsByTagName("cbc:UBLVersionID")[0].childNodes[0].nodeValue,
+            V_estruc:xmlFile.getElementsByTagName("cbc:CustomizationID")[0].childNodes[0].nodeValue,
+            time_emi:xmlFile.getElementsByTagName("cbc:IssueTime")[0].childNodes[0].nodeValue,
+            Cod_docu:xmlFile.getElementsByTagName("cbc:InvoiceTypeCode")[0].childNodes[0].nodeValue,
+            leyenda:xmlFile.getElementsByTagName('cbc:Note')[0].childNodes[0].nodeValue,
+            Tp_mond:xmlFile.getElementsByTagName("cbc:DocumentCurrencyCode")[0].childNodes[0].nodeValue,
+            num_items:xmlFile.getElementsByTagName("cbc:LineCountNumeric")[0].childNodes[0].nodeValue,
+            Ruc:xmlFile.getElementsByTagName("cbc:ID")[2].childNodes[0].nodeValue,
+            cod_dom_fiscal:xmlFile.getElementsByTagName("cbc:AddressTypeCode")[0].childNodes[0].nodeValue,
+            name_adquiriente:xmlFile.getElementsByTagName("cbc:RegistrationName")[1].childNodes[0].nodeValue,
+            ruc_adquitiente:xmlFile.getElementsByTagName("cbc:ID")[4].childNodes[0].nodeValue,
+            Direc_adquiriente:xmlFile.getElementsByTagName("cbc:Line")[1].childNodes[0].nodeValue,
+            Direc_empresa:xmlFile.getElementsByTagName("cbc:Line")[0].childNodes[0].nodeValue,
+            cod_dom_fiscal_adquiriente:xmlFile.getElementsByTagName("cbc:AddressTypeCode")[1].childNodes[0].nodeValue,
         };
 
         let cellIndex = 0;
