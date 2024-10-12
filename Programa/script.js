@@ -12,14 +12,51 @@ FORM.addEventListener("submit", function () {
         let currentDate = new Date();
         currentDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 
+        let cbcId = xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null";
+        let [Serie_comp, Número_comp] = cbcId.split('-');
+
+        // Extraer fechas del XML en formato YYYY-MM-DD
+        let issueDateStr = xmlFile.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null";
+        let dueDateStr = xmlFile.getElementsByTagName("cbc:PaymentDueDate")[0]?.childNodes[0]?.nodeValue || "null";
+
+        // Descomponer las fechas en año, mes y día
+        let [issueYear, issueMonth, issueDay] = issueDateStr.split('-').map(Number);
+        let [dueYear, dueMonth, dueDay] = dueDateStr.split('-').map(Number);
+
+        // Calcular las diferencias
+        let yearDiff = dueYear - issueYear;
+        let monthDiff = dueMonth - issueMonth;
+        let dayDiff = dueDay - issueDay;
+
+        // Ajuste de diferencias si los días o meses son negativos
+        if (dayDiff < 0) {
+            monthDiff -= 1;
+            // Sumar los días del mes anterior
+            dayDiff += new Date(issueYear, issueMonth, 0).getDate();
+        }
+
+        if (monthDiff < 0) {
+            yearDiff -= 1;
+            monthDiff += 12;
+        }
+
+        // Formatear la diferencia en el formato "YYYY-MM-DD"
+        let periodDifference = `${String(yearDiff).padStart(4, '0')}-${String(monthDiff).padStart(2, '0')}-${String(dayDiff).padStart(2, '0')}`;
+
         let data = {
+            Periodo: periodDifference,
+            Fecha_emision_comp: issueDateStr,
+            Fecha_vencimiento_comp: dueDateStr,
+            Tipo_comp: xmlFile.getElementsByTagName("cbc:InvoiceTypeCode")[0]?.childNodes[0]?.nodeValue || "null",
+            Serie_comp: Serie_comp || "null", 
+            Número_comp: Número_comp || "null",
+            ---------------------------------------------
 
-            ------------------------------------------------------
+            ---------------------------------------------
 
-            ------------------------------------------------------
+            ------------------------------------------
 
-            ------------------------------------------------------
-            
+
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
         //     currentDate: currentDate,
