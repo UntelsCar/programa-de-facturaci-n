@@ -3,11 +3,14 @@ const INPUT = document.getElementById("inputId");
 const TABLE = document.getElementById("tableId");
 const BTN = document.getElementById("btnGozu");
 
-FORM.addEventListener("submit", function () {
+FORM.addEventListener("submit", function (e) {
+
+    e.preventDefault();
+
     if (INPUT.files[0] == null) return null;
     let reader = new FileReader();
     reader.readAsText(INPUT.files[0]);
-    reader.onload = function(element) {
+    reader.onload = async function(element) {
         let xmlFile = $.parseXML(element.target.result);
         let currentDate = new Date();
         currentDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
@@ -42,34 +45,38 @@ FORM.addEventListener("submit", function () {
 
         // Formatear la diferencia en el formato "YYYY-MM-DD"
         let periodDifference = `${String(yearDiff).padStart(4, '0')}-${String(monthDiff).padStart(2, '0')}-${String(dayDiff).padStart(2, '0')}`;
+        
+        // cargar empresas con retencion
+        let retentionRucs = await loadRetentionFile('./AgenRet_TXT.txt');
 
         let data = {
             Periodo: periodDifference,
             Fecha_emision_comp: issueDateStr,
             Fecha_vencimiento_comp: dueDateStr,
-            Tipo_comp: xmlFile.getElementsByTagName("cbc:InvoiceTypeCode")[0]?.childNodes[0]?.nodeValue || "null",
-            Serie_comp: Serie_comp || "null", 
-            Número_comp: Número_comp || "null",
+            Tipo_comp: xmlFile.getElementsByTagName("cbc:InvoiceTypeCode")[0]?.childNodes[0]?.nodeValue || "-",
+            Serie_comp: Serie_comp || "-", 
+            Número_comp: Número_comp || "-",
             //------------------------------------------------------
-            tipoDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.getAttribute("schemeID") || "null",
-            numeroDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.childNodes[0]?.nodeValue || "null",
-            razonSocialProveedor: xmlFile.getElementsByTagName("cbc:RegistrationName")[0]?.childNodes[0]?.nodeValue || "null",
-            baseImponibleGravadas: xmlFile.getElementsByTagName("cbc:LineExtensionAmount")[0]?.childNodes[0]?.nodeValue || "null",
-            montoIGV: xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue || "null",
-            
-            otrosTributosCargos: xmlFile.getElementsByTagName("cbc:ChargeTotalAmount")[0]?.childNodes[0]?.nodeValue || "null",
+            tipoDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.getAttribute("schemeID") || "-",
+            numeroDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.childNodes[0]?.nodeValue || "-",
+            razonSocialProveedor: xmlFile.getElementsByTagName("cbc:RegistrationName")[0]?.childNodes[0]?.nodeValue || "-",
+            baseImponibleGravadas: xmlFile.getElementsByTagName("cbc:LineExtensionAmount")[0]?.childNodes[0]?.nodeValue || "-",
+            montoIGV: xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue || "-",
+            otrosTributosCargos: xmlFile.getElementsByTagName("cbc:ChargeTotalAmount")[0]?.childNodes[0]?.nodeValue || "-",
 
             //------------------------------------------------------
-            importe_total: xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue || "null",
-            cod_moneda: xmlFile.getElementsByTagName("cbc:DocumentCurrencyCode")[0]?.childNodes[0]?.nodeValue || "null",
-            tipo_cambio: xmlFile.getElementsByTagName("cac:ExchangeRate")[0]?.getElementsByTagName("cbc:CalculationRate")[0]?.childNodes[0]?.nodeValue || "null",
-            fecha_emision_comprobante_modificado: xmlFile.getElementsByTagName("cac:BillingReference")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null",
-            tipo_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:DocumentTypeCode")[0]?.childNodes[0]?.nodeValue || "null",
-            num_serie_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
-            num_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
-            fecha_emision_detraccion: xmlFile.getElementsByTagName("sac:SUNATRetentionInformation")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null",
+            importe_total: xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue || "-",
+            cod_moneda: xmlFile.getElementsByTagName("cbc:DocumentCurrencyCode")[0]?.childNodes[0]?.nodeValue || "-",
+            tipo_cambio: xmlFile.getElementsByTagName("cac:ExchangeRate")[0]?.getElementsByTagName("cbc:CalculationRate")[0]?.childNodes[0]?.nodeValue || "-",
+            fecha_emision_comprobante_modificado: xmlFile.getElementsByTagName("cac:BillingReference")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "-",
+            tipo_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:DocumentTypeCode")[0]?.childNodes[0]?.nodeValue || "-",
+            num_serie_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "-",
+            num_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "-",
+            fecha_emision_detraccion: xmlFile.getElementsByTagName("sac:SUNATRetentionInformation")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "-",
             //------------------------------------------------------
             
+            deposit_certificate_n: xmlFile.getElementsByTagName("cac:PayeeFinancialAccount")[0]?.childNodes[0]?.childNodes[0]?.nodeValue || "No Sujeto a Detraccion",
+            hasRetention: (retentionRucs.includes(xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue)) ? "Sujeto a Retencion" : "No Sujeto a Retencion",
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
         //     currentDate: currentDate,
@@ -112,45 +119,45 @@ FORM.addEventListener("submit", function () {
 
         };
 
-        // Verificar condiciones para detracción o retención
-        let igvAmount = Array.from(xmlFile.getElementsByTagName("cbc:Name")).some(nameNode => nameNode.childNodes[0]?.nodeValue === "IGV");
-        if (data.payableAmount > 700 && igvAmount) {
-            // Verificar si alguna descripción contiene las palabras clave
-            const keywords = [
-                "digitalizacion","planos","servicio","intermediacion laboral", "arrendamiento", "mantenimiento", "reparacion", "movimiento",
-                "comision", "fabricacion", "transporte", "contratos", "hidrobiológicos", "maiz amarillo",
-                "caña de azúcar", "arena y piedra", "residuos", "subproductos", "desechos", "recortes", 
-                "desperdicios", "bienes gravados con el igv por renuncia a la exoneración", 
-                "carnes y despojos comestibles", "aceite de pescado", 
-                "harina","polvo","pellets de pescado"," crustáceos", "moluscos", 
-                "leche", "madera", "oro gravado con el igv", "paprika", 
-                "minerales metálicos no auríferos", "oro", "plomo"
-            ];
+        // // Verificar condiciones para detracción o retención
+        // let igvAmount = Array.from(xmlFile.getElementsByTagName("cbc:Name")).some(nameNode => nameNode.childNodes[0]?.nodeValue === "IGV");
+        // if (data.payableAmount > 700 && igvAmount) {
+        //     // Verificar si alguna descripción contiene las palabras clave
+        //     const keywords = [
+        //         "digitalizacion","planos","servicio","intermediacion laboral", "arrendamiento", "mantenimiento", "reparacion", "movimiento",
+        //         "comision", "fabricacion", "transporte", "contratos", "hidrobiológicos", "maiz amarillo",
+        //         "caña de azúcar", "arena y piedra", "residuos", "subproductos", "desechos", "recortes", 
+        //         "desperdicios", "bienes gravados con el igv por renuncia a la exoneración", 
+        //         "carnes y despojos comestibles", "aceite de pescado", 
+        //         "harina","polvo","pellets de pescado"," crustáceos", "moluscos", 
+        //         "leche", "madera", "oro gravado con el igv", "paprika", 
+        //         "minerales metálicos no auríferos", "oro", "plomo"
+        //     ];
             
-            let items = xmlFile.getElementsByTagName("cac:Item");
-            let hasDetractionKeyword = false;
+        //     let items = xmlFile.getElementsByTagName("cac:Item");
+        //     let hasDetractionKeyword = false;
             
-            for (let i = 0; i < items.length; i++) {
-                let description = items[i].getElementsByTagName("cbc:Description")[0]?.childNodes[0]?.nodeValue || "";
-                // Convertir la descripción a minúsculas
-                description = description.toLowerCase(); 
-                for (let keyword of keywords) {
-                    // Convertir la palabra clave a minúsculas
-                    if (description.includes(keyword.toLowerCase())) {
-                        hasDetractionKeyword = true;
-                        break; // Salir del bucle si se encuentra una palabra clave
-                    }
-                }
-                if (hasDetractionKeyword) break; // Salir si se encontró una palabra clave
-            }
+        //     for (let i = 0; i < items.length; i++) {
+        //         let description = items[i].getElementsByTagName("cbc:Description")[0]?.childNodes[0]?.nodeValue || "";
+        //         // Convertir la descripción a minúsculas
+        //         description = description.toLowerCase(); 
+        //         for (let keyword of keywords) {
+        //             // Convertir la palabra clave a minúsculas
+        //             if (description.includes(keyword.toLowerCase())) {
+        //                 hasDetractionKeyword = true;
+        //                 break; // Salir del bucle si se encuentra una palabra clave
+        //             }
+        //         }
+        //         if (hasDetractionKeyword) break; // Salir si se encontró una palabra clave
+        //     }
 
-            // Establecer el estado según los resultados
-            if (hasDetractionKeyword) {
-                data.status = "sujeto a detracción";
-            } else {
-                data.status = "sujeto a retención";
-            }
-        }
+        //     // Establecer el estado según los resultados
+        //     if (hasDetractionKeyword) {
+        //         data.status = "sujeto a detracción";
+        //     } else {
+        //         data.status = "sujeto a retención";
+        //     }
+        // }
 
         // Insertar los datos en la tabla
         let cellIndex = 0;
@@ -170,7 +177,7 @@ BTN.addEventListener("click", function(){
     let rowsQuantity = TABLE.rows.length;
     if (rowsQuantity > 1) for (let i = 0; i < rowsQuantity; i++) {
         let rowTemp = [];
-        for (let j = 0; j < 20; j++) {
+        for (let j = 0; j < 23; j++) {
             rowTemp.push(TABLE.rows[i].cells[j].innerHTML);
         }
         result.push(rowTemp);
@@ -196,3 +203,9 @@ BTN.addEventListener("click", function(){
     // downloadLink.download = 'data.xls';
     // downloadLink.click();
 });
+
+async function loadRetentionFile(filePath = './AgenRet_TXT.txt') {
+    const response = await fetch(filePath);
+    const text = await response.text();
+    return text.split('\n').map(line => line.split('|')[0].trim()); // Extrae solo los RUCs
+}
