@@ -50,13 +50,26 @@ FORM.addEventListener("submit", function () {
             Tipo_comp: xmlFile.getElementsByTagName("cbc:InvoiceTypeCode")[0]?.childNodes[0]?.nodeValue || "null",
             Serie_comp: Serie_comp || "null", 
             Número_comp: Número_comp || "null",
-            ---------------------------------------------
+            //------------------------------------------------------
+            tipoDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.getAttribute("schemeID") || "null",
+            numeroDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.childNodes[0]?.nodeValue || "null",
+            razonSocialProveedor: xmlFile.getElementsByTagName("cbc:RegistrationName")[0]?.childNodes[0]?.nodeValue || "null",
+            baseImponibleGravadas: xmlFile.getElementsByTagName("cbc:LineExtensionAmount")[0]?.childNodes[0]?.nodeValue || "null",
+            montoIGV: xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue || "null",
+            impuestoICBPER: xmlFile.getElementsByTagName("cbc:TaxAmount")[1]?.childNodes[0]?.nodeValue || "null",
+            otrosTributosCargos: xmlFile.getElementsByTagName("cbc:ChargeTotalAmount")[0]?.childNodes[0]?.nodeValue || "null",
 
-            ---------------------------------------------
-
-            ------------------------------------------
-
-
+            //------------------------------------------------------
+            importe_total: xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue || "null",
+            cod_moneda: xmlFile.getElementsByTagName("cbc:DocumentCurrencyCode")[0]?.childNodes[0]?.nodeValue || "null",
+            tipo_cambio: xmlFile.getElementsByTagName("cac:ExchangeRate")[0]?.getElementsByTagName("cbc:CalculationRate")[0]?.childNodes[0]?.nodeValue || "null",
+            fecha_emision_comprobante_modificado: xmlFile.getElementsByTagName("cac:BillingReference")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null",
+            tipo_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:DocumentTypeCode")[0]?.childNodes[0]?.nodeValue || "null",
+            num_serie_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
+            num_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
+            fecha_emision_detraccion: xmlFile.getElementsByTagName("sac:SUNATRetentionInformation")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null",
+            //------------------------------------------------------
+            
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
         //     currentDate: currentDate,
@@ -87,6 +100,16 @@ FORM.addEventListener("submit", function () {
         //     // Nuevo campo para la condición de detracción o retención
         //     status: "no está sujeto a nada" // Valor predeterminado
         
+
+        // PARTE DE HENRY
+
+        //ns_q_es_xd: xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue || "null",
+        
+
+
+        //AQUÍ TEMINA LA HVD DE HENRY    
+
+
         };
 
         // Verificar condiciones para detracción o retención
