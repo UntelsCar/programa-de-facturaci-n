@@ -50,6 +50,22 @@ FORM.addEventListener("submit", function () {
         //     // Nuevo campo para la condición de detracción o retención
         //     status: "no está sujeto a nada" // Valor predeterminado
         
+
+        // PARTE DE HENRY
+
+        // ns_q_es_xd: xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue || "null",
+        // tipoDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.getAttribute("schemeID") || "null",
+        // numeroDocProveedor: Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.childNodes[0]?.nodeValue || "null",
+        // razonSocialProveedor: xmlFile.getElementsByTagName("cbc:RegistrationName")[0]?.childNodes[0]?.nodeValue || "null",
+        // baseImponibleGravadas: xmlFile.getElementsByTagName("cbc:LineExtensionAmount")[0]?.childNodes[0]?.nodeValue || "null",
+        // montoIGV: xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue || "null",
+        // impuestoICBPER: xmlFile.getElementsByTagName("cbc:TaxAmount")[1]?.childNodes[0]?.nodeValue || "null",
+        // otrosTributosCargos: xmlFile.getElementsByTagName("cbc:ChargeTotalAmount")[0]?.childNodes[0]?.nodeValue || "null",
+
+
+        //AQUÍ TEMINA LA HVD DE HENRY    
+
+
         };
 
         // Verificar condiciones para detracción o retención
