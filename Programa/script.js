@@ -23,8 +23,8 @@ FORM.addEventListener("submit", function (e) {
         //------------------------------------------------------
 
         //------------------------------------------------------  
-        deposit_certificate_n: xmlFile.getElementsByTagName("cac:PayeeFinancialAccount")[0]?.childNodes[0]?.childNodes[0]?.nodeValue || "null",
-        hasRetention: retentionRucs.includes(xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue || "null"),
+        deposit_certificate_n: xmlFile.getElementsByTagName("cac:PayeeFinancialAccount")[0]?.childNodes[0]?.childNodes[0]?.nodeValue || "No Sujeto a Detraccion",
+        hasRetention: (retentionRucs.includes(xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue)) ? "Sujeto a Retencion" : "No Sujeto a Retencion",
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
         //     currentDate: currentDate,
