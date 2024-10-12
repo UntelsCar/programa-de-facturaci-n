@@ -14,11 +14,18 @@ FORM.addEventListener("submit", function () {
 
         let data = {
 
-            ------------------------------------------------------
+            //------------------------------------------------------
 
-            ------------------------------------------------------
-
-            ------------------------------------------------------
+            //------------------------------------------------------
+            importe_total: xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue || "null",
+            cod_moneda: xmlFile.getElementsByTagName("cbc:DocumentCurrencyCode")[0]?.childNodes[0]?.nodeValue || "null",
+            tipo_cambio: xmlFile.getElementsByTagName("cac:ExchangeRate")[0]?.getElementsByTagName("cbc:CalculationRate")[0]?.childNodes[0]?.nodeValue || "null",
+            fecha_emision_comprobante_modificado: xmlFile.getElementsByTagName("cac:BillingReference")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null",
+            tipo_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:DocumentTypeCode")[0]?.childNodes[0]?.nodeValue || "null",
+            num_serie_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
+            num_comprobante_modificado: xmlFile.getElementsByTagName("cac:InvoiceDocumentReference")[0]?.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
+            fecha_emision_detraccion: xmlFile.getElementsByTagName("sac:SUNATRetentionInformation")[0]?.getElementsByTagName("cbc:IssueDate")[0]?.childNodes[0]?.nodeValue || "null",
+            //------------------------------------------------------
             
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
