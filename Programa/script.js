@@ -3,23 +3,28 @@ const INPUT = document.getElementById("inputId");
 const TABLE = document.getElementById("tableId");
 const BTN = document.getElementById("btnGozu");
 
-FORM.addEventListener("submit", function () {
+FORM.addEventListener("submit", function (e) {
+
+    e.preventDefault();
+
     if (INPUT.files[0] == null) return null;
     let reader = new FileReader();
     reader.readAsText(INPUT.files[0]);
-    reader.onload = function(element) {
+    reader.onload = async function(element) {
         let xmlFile = $.parseXML(element.target.result);
         let currentDate = new Date();
         currentDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 
+        let retentionRucs = await loadRetentionFile('./AgenRet_TXT.txt');
         let data = {
 
-            ------------------------------------------------------
+        //------------------------------------------------------
 
-            ------------------------------------------------------
+        //------------------------------------------------------
 
-            ------------------------------------------------------
-            
+        //------------------------------------------------------  
+        deposit_certificate_n: xmlFile.getElementsByTagName("cac:PayeeFinancialAccount")[0]?.childNodes[0]?.childNodes[0]?.nodeValue || "null",
+        hasRetention: retentionRucs.includes(xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue || "null"),
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
         //     currentDate: currentDate,
@@ -52,45 +57,45 @@ FORM.addEventListener("submit", function () {
         
         };
 
-        // Verificar condiciones para detracción o retención
-        let igvAmount = Array.from(xmlFile.getElementsByTagName("cbc:Name")).some(nameNode => nameNode.childNodes[0]?.nodeValue === "IGV");
-        if (data.payableAmount > 700 && igvAmount) {
-            // Verificar si alguna descripción contiene las palabras clave
-            const keywords = [
-                "digitalizacion","planos","servicio","intermediacion laboral", "arrendamiento", "mantenimiento", "reparacion", "movimiento",
-                "comision", "fabricacion", "transporte", "contratos", "hidrobiológicos", "maiz amarillo",
-                "caña de azúcar", "arena y piedra", "residuos", "subproductos", "desechos", "recortes", 
-                "desperdicios", "bienes gravados con el igv por renuncia a la exoneración", 
-                "carnes y despojos comestibles", "aceite de pescado", 
-                "harina","polvo","pellets de pescado"," crustáceos", "moluscos", 
-                "leche", "madera", "oro gravado con el igv", "paprika", 
-                "minerales metálicos no auríferos", "oro", "plomo"
-            ];
+        // // Verificar condiciones para detracción o retención
+        // let igvAmount = Array.from(xmlFile.getElementsByTagName("cbc:Name")).some(nameNode => nameNode.childNodes[0]?.nodeValue === "IGV");
+        // if (data.payableAmount > 700 && igvAmount) {
+        //     // Verificar si alguna descripción contiene las palabras clave
+        //     const keywords = [
+        //         "digitalizacion","planos","servicio","intermediacion laboral", "arrendamiento", "mantenimiento", "reparacion", "movimiento",
+        //         "comision", "fabricacion", "transporte", "contratos", "hidrobiológicos", "maiz amarillo",
+        //         "caña de azúcar", "arena y piedra", "residuos", "subproductos", "desechos", "recortes", 
+        //         "desperdicios", "bienes gravados con el igv por renuncia a la exoneración", 
+        //         "carnes y despojos comestibles", "aceite de pescado", 
+        //         "harina","polvo","pellets de pescado"," crustáceos", "moluscos", 
+        //         "leche", "madera", "oro gravado con el igv", "paprika", 
+        //         "minerales metálicos no auríferos", "oro", "plomo"
+        //     ];
             
-            let items = xmlFile.getElementsByTagName("cac:Item");
-            let hasDetractionKeyword = false;
+        //     let items = xmlFile.getElementsByTagName("cac:Item");
+        //     let hasDetractionKeyword = false;
             
-            for (let i = 0; i < items.length; i++) {
-                let description = items[i].getElementsByTagName("cbc:Description")[0]?.childNodes[0]?.nodeValue || "";
-                // Convertir la descripción a minúsculas
-                description = description.toLowerCase(); 
-                for (let keyword of keywords) {
-                    // Convertir la palabra clave a minúsculas
-                    if (description.includes(keyword.toLowerCase())) {
-                        hasDetractionKeyword = true;
-                        break; // Salir del bucle si se encuentra una palabra clave
-                    }
-                }
-                if (hasDetractionKeyword) break; // Salir si se encontró una palabra clave
-            }
+        //     for (let i = 0; i < items.length; i++) {
+        //         let description = items[i].getElementsByTagName("cbc:Description")[0]?.childNodes[0]?.nodeValue || "";
+        //         // Convertir la descripción a minúsculas
+        //         description = description.toLowerCase(); 
+        //         for (let keyword of keywords) {
+        //             // Convertir la palabra clave a minúsculas
+        //             if (description.includes(keyword.toLowerCase())) {
+        //                 hasDetractionKeyword = true;
+        //                 break; // Salir del bucle si se encuentra una palabra clave
+        //             }
+        //         }
+        //         if (hasDetractionKeyword) break; // Salir si se encontró una palabra clave
+        //     }
 
-            // Establecer el estado según los resultados
-            if (hasDetractionKeyword) {
-                data.status = "sujeto a detracción";
-            } else {
-                data.status = "sujeto a retención";
-            }
-        }
+        //     // Establecer el estado según los resultados
+        //     if (hasDetractionKeyword) {
+        //         data.status = "sujeto a detracción";
+        //     } else {
+        //         data.status = "sujeto a retención";
+        //     }
+        // }
 
         // Insertar los datos en la tabla
         let cellIndex = 0;
@@ -136,3 +141,9 @@ BTN.addEventListener("click", function(){
     // downloadLink.download = 'data.xls';
     // downloadLink.click();
 });
+
+async function loadRetentionFile(filePath = './AgenRet_TXT.txt') {
+    const response = await fetch(filePath);
+    const text = await response.text();
+    return text.split('\n').map(line => line.split('|')[0].trim()); // Extrae solo los RUCs
+}
