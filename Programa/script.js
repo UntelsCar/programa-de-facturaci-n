@@ -56,7 +56,7 @@ FORM.addEventListener("submit", function () {
             razonSocialProveedor: xmlFile.getElementsByTagName("cbc:RegistrationName")[0]?.childNodes[0]?.nodeValue || "null",
             baseImponibleGravadas: xmlFile.getElementsByTagName("cbc:LineExtensionAmount")[0]?.childNodes[0]?.nodeValue || "null",
             montoIGV: xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue || "null",
-            impuestoICBPER: xmlFile.getElementsByTagName("cbc:TaxAmount")[1]?.childNodes[0]?.nodeValue || "null",
+            
             otrosTributosCargos: xmlFile.getElementsByTagName("cbc:ChargeTotalAmount")[0]?.childNodes[0]?.nodeValue || "null",
 
             //------------------------------------------------------
@@ -170,7 +170,7 @@ BTN.addEventListener("click", function(){
     let rowsQuantity = TABLE.rows.length;
     if (rowsQuantity > 1) for (let i = 0; i < rowsQuantity; i++) {
         let rowTemp = [];
-        for (let j = 0; j < 7; j++) {
+        for (let j = 0; j < 20; j++) {
             rowTemp.push(TABLE.rows[i].cells[j].innerHTML);
         }
         result.push(rowTemp);
