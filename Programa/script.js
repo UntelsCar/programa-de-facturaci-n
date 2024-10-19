@@ -50,7 +50,8 @@ FORM.addEventListener("submit", function (e) {
         let retentionRucs = await loadRetentionFile('./AgenRet_TXT.txt');
 
         hasRetentionValidator = false
-        if (xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue && xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue > 700) {
+
+        if (xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue && parseInt(xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue) > 700) {
             hasRetentionValidator = true
         }
 
