@@ -49,6 +49,11 @@ FORM.addEventListener("submit", function (e) {
         // cargar empresas con retencion
         let retentionRucs = await loadRetentionFile('./AgenRet_TXT.txt');
 
+        hasRetentionValidator = false
+        if (xmlFile.getElementsByTagName("cbc:TaxAmount")[0]?.childNodes[0]?.nodeValue && xmlFile.getElementsByTagName("cac:LegalMonetaryTotal")[0]?.getElementsByTagName("cbc:PayableAmount")[0]?.childNodes[0]?.nodeValue > 700) {
+            hasRetentionValidator = true
+        }
+
         let data = {
             Periodo: periodDifference,
             Fecha_emision_comp: issueDateStr,
@@ -76,7 +81,7 @@ FORM.addEventListener("submit", function (e) {
             //------------------------------------------------------
             
             deposit_certificate_n: xmlFile.getElementsByTagName("cac:PayeeFinancialAccount")[0]?.childNodes[0]?.childNodes[0]?.nodeValue || "No Sujeto a Detraccion",
-            hasRetention: (retentionRucs.includes(xmlFile.getElementsByTagName("cbc:ID")[2]?.childNodes[0]?.nodeValue)) ? "Sujeto a Retencion" : "No Sujeto a Retencion",
+            hasRetention: (retentionRucs.includes(Array.from(xmlFile.getElementsByTagName("cbc:ID")).find(id => id.getAttribute("schemeName") === "Documento de Identidad")?.childNodes[0]?.nodeValue || "-") && hasRetentionValidator) ? "Sujeto a Retencion" : "No Sujeto a Retencion",
 
         //     reference: xmlFile.getElementsByTagName("cbc:ID")[0]?.childNodes[0]?.nodeValue || "null",
         //     currentDate: currentDate,
